@@ -6,11 +6,11 @@
 			<div class="h-user">{{ username }}</div>
 		</div>
 		<div class="h-set">
-			<el-link>主页</el-link>
+			<el-link href="/index">主页</el-link>
 			<el-divider direction="vertical"></el-divider>
-			<el-link type="success">发表文章</el-link>
+			<el-link type="success" href="/addBlog">发表文章</el-link>
 			<el-divider direction="vertical"></el-divider>
-			<el-link type="warning">退出</el-link>
+			<el-link type="warning" @click="logout">退出</el-link>
 		</div>
 	</div>
 </template>
@@ -30,6 +30,11 @@ export default {
 	methods: {
 		inits() {
 			this.username = userUtils.getUserName() ? userUtils.getUserName() : 'Tom';
+		},
+		logout(){
+			console.log('退出')
+			window.localStorage.setItem('jwt','')
+			this.$router.push('/')
 		}
 	}
 };

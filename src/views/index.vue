@@ -3,22 +3,10 @@
 		<Header></Header>
 		<div class="content">
 			<el-timeline>
-				<el-timeline-item timestamp="2018/4/12" placement="top">
+				<el-timeline-item :timestamp="item.createTime" placement="top" v-for="item in blogs">
 					<el-card>
-						<h4>更新 Github 模板</h4>
-						<p>王小虎 提交于 2018/4/12 20:46</p>
-					</el-card>
-				</el-timeline-item>
-				<el-timeline-item timestamp="2018/4/3" placement="top">
-					<el-card>
-						<h4>更新 Github 模板</h4>
-						<p>王小虎 提交于 2018/4/3 20:46</p>
-					</el-card>
-				</el-timeline-item>
-				<el-timeline-item timestamp="2018/4/2" placement="top">
-					<el-card>
-						<h4>更新 Github 模板</h4>
-						<p>王小虎 提交于 2018/4/2 20:46</p>
+						<router-link :to="{path: 'detailBlog', query: {id: item.id }}"><h4>{{item.title}}</h4></router-link>
+						<p>{{item.description}}</p>
 					</el-card>
 				</el-timeline-item>
 			</el-timeline>
@@ -36,15 +24,26 @@ export default {
 	},
 	data() {
 		return {
-			blogs: []
+			blogs: [],
+			pageNo: 1,
+			pageSize: 10,
+			total:0
 		};
 	},
 	created() {
 		this.initBlogs();
 	},
 	methods: {
-		initBlogs() {
-			
+		async initBlogs() {
+			let param = {
+				pageNo: this.pageNo,
+				pageSize: this.pageSize
+			};
+			let res = await api.blogs(param);
+			if (res.code===1){
+				this.blogs=res.rows
+				this.total=res.total
+			}
 		}
 	}
 };
@@ -53,11 +52,10 @@ export default {
 .index-content {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
 	align-items: center;
 }
 .content {
-	width: 60%;
+	width: 50%;
 	margin: 40px 0 20px -50px;
 }
 </style>
