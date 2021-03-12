@@ -5,11 +5,14 @@
 			<el-timeline>
 				<el-timeline-item :timestamp="item.createTime" placement="top" v-for="item in blogs">
 					<el-card>
-						<router-link :to="{path: 'detailBlog', query: {id: item.id }}"><h4>{{item.title}}</h4></router-link>
-						<p>{{item.description}}</p>
+						<router-link :to="{ path: 'detailBlog', query: { id: item.id } }">
+							<h4>{{ item.title }}</h4>
+						</router-link>
+						<p>{{ item.description }}</p>
 					</el-card>
 				</el-timeline-item>
 			</el-timeline>
+			<el-pagination background layout="prev, pager, next" @current-change="pageChange" :current-page="pageNo" :page-size="pageSize" :total="total"></el-pagination>
 		</div>
 	</div>
 </template>
@@ -26,23 +29,29 @@ export default {
 		return {
 			blogs: [],
 			pageNo: 1,
-			pageSize: 10,
-			total:0
+			pageSize: 3,
+			total: 0
 		};
 	},
 	created() {
 		this.initBlogs();
 	},
 	methods: {
+		async pageChange(pageNo) {
+			console.log(pageNo);
+			this.pageNo = pageNo;
+			this.initBlogs();
+		},
 		async initBlogs() {
 			let param = {
 				pageNo: this.pageNo,
 				pageSize: this.pageSize
 			};
 			let res = await api.blogs(param);
-			if (res.code===1){
-				this.blogs=res.rows
-				this.total=res.total
+			console.log(res);
+			if (res.code === 1) {
+				this.blogs = res.rows;
+				this.total = res.total;
 			}
 		}
 	}
