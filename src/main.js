@@ -9,41 +9,38 @@ import axios from 'axios'
 
 axios.defaults.baseURL = 'http://localhost:8899'
 const err = (error) => {
-    if (error.response) {
-        let data = error.response.data
-        const token = window.localStorage.getItem('jwt')
-        console.log('------异常响应------', token)
-        console.log('------异常响应code------', error.response.data.code)
-        console.log('------异常响应------', error.response.status)
-        switch (error.response.status) {
-        case 403:
-            window.localStorage.setItem('jwt', '');
-            window.location.reload()
-            break
-        case 500:
-            window.localStorage.setItem('jwt', '');
-			window.location.reload()
-            break
-        case 404:
-            
-            break
-        case 504:
-            
-            break
-        case 401:
-            
-            break
-        default:
-            
-            break
-        }
-    }
-    return Promise.reject(error)
+	console.log(error.response)
+	if (error.response) {
+		let data = error.response.data
+		const token = window.localStorage.getItem('jwt')
+		const err_msg = error.response.data.message
+		console.log('------异常响应------', error.response.status)
+		console.log('------异常响应提示------', err_msg)
+		switch (error.response.status) {
+			case 500:
+				setTimeout(()=>{
+					router.replace({
+						path: '/',
+					})
+					window.localStorage.setItem('jwt', '');
+				},500)
+				Element.Message({
+					message: err_msg.split(":")[1],
+					type: 'warning'
+				});
+				break
+			case 401:
+				break
+			default:
+				break
+		}
+	}
+	return Promise.reject(error)
 }
 
 // 请求预处理
 axios.interceptors.request.use(config => {
-	config.headers.Authorization = window.localStorage.getItem('jwt')
+	config.headers.authorization = window.localStorage.getItem('jwt')
 	return config
 })
 // 响应预处理
@@ -55,7 +52,26 @@ axios.interceptors.request.use(config => {
 }); */
 
 axios.interceptors.response.use((response) => {
-    return response.data
+	const auth = response.headers.authorization
+	if (auth) {
+		window.localStorage.setItem('jwt', auth);
+	}
+	const res = response.data;
+	switch (res.code) {
+		case -1:
+			Element.Message({
+				message: res.message,
+				type: 'warning'
+			});
+			window.localStorage.setItem('jwt', '');
+			router.replace({
+				path: '/',
+			})
+			break
+		default:
+			break
+	}
+	return res
 }, err)
 
 Vue.prototype.$http = axios
@@ -76,7 +92,6 @@ router.beforeEach((to, from, next) => {
 			})
 		}
 	}
-
 })
 
 new Vue({

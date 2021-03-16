@@ -14,10 +14,17 @@ export default new Vuex.Store({
 		},
 		addUser(state, user) {
 			state.user = user
+		},
+		removeJwt(state) {
+			state.jwt = ''
 		}
 	},
-	actions: {},
-	modules: {},
+	actions: {
+		
+	},
+	modules: {
+		
+	},
 	getters: {
 		getJwt: state => {
 			return state.jwt

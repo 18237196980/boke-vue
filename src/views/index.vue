@@ -48,7 +48,6 @@ export default {
 				pageSize: this.pageSize
 			};
 			let res = await api.blogs(param);
-			console.log(res);
 			if (res.code === 1) {
 				this.blogs = res.rows;
 				this.total = res.total;

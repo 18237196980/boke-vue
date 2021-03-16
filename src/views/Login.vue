@@ -37,9 +37,11 @@ export default {
 				if (valid) {
 					const res = await api.login(that.ruleForm);
 					if (res.code === 1) {
-						// 登录成功。存jwt及用户信息，然后跳转到首页
+						// 登录成功,存jwt及用户信息，然后跳转到首页
 						that.saveUser(res.data);
-						that.$router.push('/index')
+						that.$router.push('/index');
+					} else {
+						that.$message.error(res.message);
 					}
 				} else {
 					console.log('error submit!!');
@@ -56,9 +58,9 @@ export default {
 			window.localStorage.setItem('avatar', data.avatar);
 			window.localStorage.setItem('jwt', data.jwt);
 			// 触发mutation
-			this.$store.commit('addJwt',data.jwt);
-			this.$store.commit('addUser',data);
-			
+			this.$store.commit('addJwt', data.jwt);
+			this.$store.commit('addUser', data);
+
 			// const ss = this.$store.getters.getJwt;
 		}
 	}
