@@ -30,7 +30,7 @@ export default {
 			blogs: [],
 			pageNo: 1,
 			pageSize: 3,
-			total: 0
+			total: 0,
 		};
 	},
 	created() {
